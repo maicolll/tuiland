@@ -1,0 +1,6 @@
+/**
+ * FRAMEWORK - Dark mode area riservata
+ * Non più caricato: il dark mode usa la variante dark: di Tailwind con classe .dark su <html>.
+ * Vedi: https://tailwindcss.com/docs/dark-mode
+ * Gli stili dark sono gestiti in private.css (blocco html.dark con override variabili CSS).
+ */

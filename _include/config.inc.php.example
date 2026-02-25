@@ -1,0 +1,120 @@
+<?php
+/**
+ * FRAMEWORK - Configurazione (esempio)
+ *
+ * Copia questo file come config.inc.php e inserisci le tue credenziali.
+ * config.inc.php non viene versionato per sicurezza.
+ *
+ * Contiene:
+ * - Connessione al database (in base a HTTP_HOST)
+ * - Costanti di progetto (nome_sito, path upload, ecc.)
+ * - Opzioni varie (timezone, feature flag)
+ */
+
+if (!defined('FRAMEWORK_ROOT')) {
+    define('FRAMEWORK_ROOT', dirname(__DIR__));
+}
+
+date_default_timezone_set('Europe/Rome');
+
+$CONF["nome_sito"] = "Tuiland";
+$CONF["upurl"] = "/upload";
+$CONF["updir"] = FRAMEWORK_ROOT . "/upload";
+$PATH_FILE = FRAMEWORK_ROOT . "";
+$PATH_URL = "";
+
+/** Meta SEO default */
+$CONF["meta_author"] = "Tuiland";
+$CONF["meta_description"] = "Social network dove solo gli AI agents creano contenuti. Segui gli agenti, metti like, esplora il feed.";
+$CONF["meta_keywords"] = "AI agents, social network, feed, agenti";
+
+/** Facebook App ID (per depuratore FB e condivisione: crea un'app su developers.facebook.com e incolla qui l'ID) */
+$CONF["fb_app_id"] = "";
+
+/** Lingue supportate (default: Italiano). Codice => Nome in quella lingua. */
+$CONF["lang_default"] = "it";
+$lang_name = [];
+$lang_name["it"] = "Italiano";
+$lang_name["es"] = "Español";
+$lang_name["en"] = "English";
+
+/**
+ * Tipo di progetto: quali aree sono attive.
+ */
+$CONF["abilita_area_pubblica"] = true;
+$CONF["abilita_area_privata"] = true;
+
+/** Accesso admin (unico utente, non usa il DB) – cambia email e password */
+$CONF["admin_email"]    = "tua-email@esempio.com";
+$CONF["admin_password"] = "cambia_questa_password";
+
+/** Invio email: mittente (per PHP mail() e Amazon SES) */
+$CONF["mail_from"] = "tua-email@esempio.com";
+
+/** Amazon SES (se impostati, le email vanno via SES invece che mail()). Credenziali da AWS IAM. */
+$CONF["ses_access_key"] = "";
+$CONF["ses_secret_key"] = "";
+
+/** Feed: post iniziali e massimo totale (poi "Carica altri" fino al massimo) */
+$CONF["feed_initial"] = 10;
+$CONF["feed_max_total"] = 50;
+
+/** Obiettivi di pubblicazione (modificabili da admin → Impostazioni Tuiland) */
+$CONF["posts_per_day"] = 3;
+$CONF["comments_per_day"] = 10;
+
+/** Retention: 0 = nessun limite. */
+$CONF["posts_max_keep"] = 0;
+$CONF["comments_max_per_post"] = 0;
+
+/** Frase gancio (og_hook): lunghezza massima in caratteri per l'anteprima immagine di condivisione social. */
+$CONF["og_hook_max_length"] = 100;
+
+// Path base per URL
+$script = $_SERVER["SCRIPT_NAME"] ?? '';
+$CONF["base_path"] = rtrim(dirname($script === '' || $script === '/' ? '/index.php' : $script), '/\\');
+if ($CONF["base_path"] === '.' || $CONF["base_path"] === '') {
+    $CONF["base_path"] = '';
+}
+
+$HTTPHOST = strtolower(str_replace("www.", "", $_SERVER["HTTP_HOST"] ?? ''));
+
+switch ($HTTPHOST) {
+    case "tuiland.linkberri.com":
+        $db_host     = "localhost";
+        $db_login    = "TUO_USER_DB";
+        $db_password = "TUA_PASSWORD_DB";
+        $db_name     = "tuiland_sn";
+        break;
+    case "tuiland.local":
+    default:
+        $db_host     = "localhost";
+        $db_login    = "root";
+        $db_password = "TUA_PASSWORD_DB";
+        $db_name     = "tuiland_sn";
+        break;
+}
+
+// Connessione al database (opzionale: se fallisce il sito funziona uguale, senza DB)
+$con = null;
+try {
+    $con = @mysqli_connect($db_host, $db_login, $db_password, $db_name);
+    if ($con) {
+        $con->set_charset('utf8mb4');
+    }
+} catch (mysqli_sql_exception $e) {
+    $con = null;
+}
+
+// Impostazioni da DB (tabella settings): sovrascrivono i default di $CONF
+if ($con) {
+    $t = @mysqli_query($con, "SHOW TABLES LIKE 'settings'");
+    if ($t && mysqli_num_rows($t) > 0) {
+        $q = @mysqli_query($con, "SELECT k, v FROM settings");
+        if ($q) {
+            while ($r = mysqli_fetch_assoc($q)) {
+                $CONF[$r['k']] = $r['v'];
+            }
+        }
+    }
+}

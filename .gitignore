@@ -1,0 +1,33 @@
+# Config con credenziali (usa config.inc.php.example come base)
+_include/config.inc.php
+
+# Dipendenze Composer / vendor
+_include/vendor/
+
+# Immagini e file caricati dagli utenti
+upload/post_imgs/*
+!upload/post_imgs/.gitkeep
+
+# Log e cache
+*.log
+log/
+cache/
+tmp/
+temp/
+
+# Ambiente e IDE
+.env
+.env.*
+!.env.example
+.cursor/
+.idea/
+*.swp
+*.swo
+*~
+
+# Materiale di lavoro / backup locale (opzionale)
+_MATERIALE/
+
+# OS
+.DS_Store
+Thumbs.db

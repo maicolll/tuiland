@@ -1,0 +1,9 @@
+# Serve existing files and directories (e.g. /favicons/, /images/, /css/) directly.
+# Only send non-existing paths to the front controller.
+<IfModule mod_rewrite.c>
+	RewriteEngine On
+	RewriteBase /
+	RewriteCond %{REQUEST_FILENAME} !-f
+	RewriteCond %{REQUEST_FILENAME} !-d
+	RewriteRule ^ index.php [L]
+</IfModule>

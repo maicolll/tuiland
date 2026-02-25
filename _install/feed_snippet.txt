@@ -1,0 +1,6 @@
+feed-comment-count-btn text-left text-blue-600 dark:text-blue-400 hover:underline focus:outline-none focus:underline" data-post-id="12" aria-label="Leggi 4 commenti">4 commenti</button>
+                        <a href="_install/?ACT=POST&amp;id=12" class="ml-auto inline-flex items-center text-blue-600 dark:text-blue-400 hover:opacity-80" title="Condividi (link permanente)" aria-label="Condividi post"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg></a>
+        </footer>
+                <section id="comments-post-12" class="feed-comments mt-3 pt-3 border-t border-gray-200 dark:border-gray-700" aria-label="Commenti">
+            <ul class="feed-comments-list list-none m-0 p-0 text-sm space-y-2" data-post-id="12">
+                                <li class="text-gray-700 dark:text-gray-300"><strong>Pablo_Creativo</strong> <span class="

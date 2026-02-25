@@ -1,0 +1,821 @@
+/**
+ * FRAMEWORK - Stili area pubblica
+ * Sistema di design: variabili :root light/dark, transizioni, accessibilità (focus, contrasti WCAG)
+ */
+
+/* Supporto light/dark per browser (form, scrollbar) anche in incognito */
+:root { color-scheme: light; }
+html.dark { color-scheme: dark; }
+
+/* ===== VARIABILI (palette light mode - contrasti WCAG AA) ===== */
+:root {
+	--color-white: #fff;
+	--color-black: #0a0a0a;
+	--color-text: #1e293b;
+	--color-text-muted: #475569;
+	--color-link: #0c5492;
+	--color-link-hover: #083d6b;
+	--color-nav-bg: #1187EE;
+	--color-nav-text: #fff;
+	--color-nav-active: #fff;
+	--color-panel-bg: transparent;
+	--color-body-bg: #a0cff8;
+	--color-heading: #0f172a;
+	--color-border: #E2E8F0;
+	--color-focus-ring: #1187EE;
+	--color-card-bg: rgba(255, 255, 255, 0.6);
+	--color-card-border: #E2E8F0;
+	--color-card-text: #1e293b;
+	--color-card-text-muted: #475569;
+	--transition-theme: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+/* Dark mode: come da design (sfondo molto scuro, nav a blocco, link attivo a pillola) */
+html.dark {
+	--color-text: #E8E8E8;
+	--color-text-muted: #B8B8B8;
+	--color-link: #60A5FA;
+	--color-link-hover: #93C5FD;
+	--color-nav-bg: #334155;
+	--color-nav-text: #fff;
+	--color-nav-active-bg: #475569;
+	--color-nav-active: #fff;
+	--color-panel-bg: transparent;
+	--color-body-bg: #0F172A;
+	--color-heading: #fff;
+	--color-border: #475569;
+	--color-focus-ring: #60A5FA;
+	--color-card-bg: rgba(30, 41, 59, 0.8);
+	--color-card-border: #475569;
+	--color-card-text: #E8E8E8;
+	--color-card-text-muted: #B8B8B8;
+}
+
+/* ===== BASE E LAYOUT ===== */
+html, body {
+	margin: 0;
+	padding: 0;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 15px;
+	line-height: 1.5;
+	min-height: 100vh;
+	color: var(--color-text);
+	transition: var(--transition-theme);
+}
+/* In incognito: evita flash tema sbagliato finché lo script non ha impostato la classe */
+html:not(.theme-resolved) body { opacity: 0; }
+html.theme-resolved body { opacity: 1; transition: opacity 0.05s ease; }
+
+body.public {
+	background-color: var(--color-body-bg);
+}
+
+.skip-link {
+	position: absolute;
+	top: -3rem;
+	left: 0.5rem;
+	padding: 0.5rem 1rem;
+	background: var(--color-nav-bg);
+	color: var(--color-nav-text);
+	text-decoration: none;
+	border-radius: 4px;
+	z-index: 200;
+	transition: top 0.2s ease;
+}
+.skip-link:focus {
+	top: 0.5rem;
+	outline: 2px solid var(--color-focus-ring);
+	outline-offset: 2px;
+}
+
+.body-bg {
+	background-color: var(--color-body-bg) !important;
+	background-image: url('../images/body-bg.png');
+	background-repeat: repeat;
+}
+html.dark .body-bg {
+	background-image: url('../images/body-bg_darkmode.png');
+}
+.body-text { color: var(--color-text) !important; }
+.panel-bg { background-color: var(--color-panel-bg) !important; }
+.panel-text { color: var(--color-text) !important; }
+.main-text { color: var(--color-text) !important; }
+.heading-color { color: var(--color-heading) !important; }
+.nav-bg { background-color: var(--color-nav-bg) !important; }
+
+.wrapper {
+	max-width: 992px;
+	min-width: 350px;
+	margin: 0 auto;
+	padding: 0 15px;
+	background: transparent;
+	transition: var(--transition-theme);
+}
+
+#site-header.hero-panel-base {
+	background: var(--color-panel-bg);
+	margin: 0;
+	border: none;
+	box-shadow: none;
+	border-radius: 0;
+	transition: var(--transition-theme);
+}
+
+#header { padding: 15px 0; border-bottom: 1px solid var(--color-border); }
+
+#logo a {
+	font-weight: bold;
+	font-size: 22px;
+	color: var(--color-nav-bg);
+	text-decoration: none;
+	transition: var(--transition-theme);
+}
+html.dark #logo a { color: #60A5FA; }
+#logo a:hover { color: var(--color-link-hover); }
+html.dark #logo a:hover { color: #93C5FD; }
+
+.logo-link:focus-visible,
+.nav-link:focus-visible,
+.footer-link:focus-visible,
+.footer-dark-btn:focus-visible,
+.back-to-top:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+	outline: 2px solid var(--color-focus-ring);
+	outline-offset: 2px;
+}
+
+#main { padding: 20px 0; }
+
+a:link, a:visited { color: var(--color-link); text-decoration: none; }
+a:hover, a:active { color: var(--color-link-hover); }
+
+/* ===== NAV (desktop + mobile) ===== */
+#nav.public-nav {
+	padding: 10px 15px;
+	margin: 0 0 15px 0;
+	border-radius: 0;
+	transition: var(--transition-theme);
+}
+html.dark #nav.public-nav {
+	border-radius: 8px;
+}
+
+#nav.public-nav ul { list-style: none; margin: 0; padding: 0; }
+#nav.public-nav li { display: inline; margin-right: 15px; }
+#nav.public-nav .nav-link {
+	color: var(--color-nav-text);
+	font-weight: bold;
+	padding: 0.4em 0.85em;
+	border-radius: 6px;
+	transition: var(--transition-theme);
+	text-decoration: none;
+}
+#nav.public-nav .nav-link-active {
+	background: rgba(255,255,255,0.15);
+}
+html.dark #nav.public-nav .nav-link {
+	color: #fff;
+}
+html.dark #nav.public-nav .nav-link-active {
+	background: var(--color-nav-active-bg, #475569);
+	color: #fff;
+	border-radius: 9999px;
+}
+
+.lang-switcher {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.5rem;
+	margin-top: 0.5rem;
+	font-size: 0.875rem;
+}
+.lang-switcher-link {
+	color: var(--color-nav-text);
+	opacity: 0.85;
+	text-decoration: none;
+	padding: 0.2em 0.5em;
+	border-radius: 4px;
+	transition: opacity 0.15s ease, background 0.15s ease;
+}
+.lang-switcher-link:hover { opacity: 1; }
+.lang-switcher-current {
+	opacity: 1;
+	font-weight: 600;
+	background: rgba(255,255,255,0.2);
+}
+html.dark .lang-switcher-link { color: #fff; }
+html.dark .lang-switcher-current { background: rgba(0,0,0,0.2); }
+
+/* Hamburger in stile Tailwind UI Navbars (menu button → X) */
+.nav-toggle-sr {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border: 0;
+}
+
+.nav-toggle {
+	display: none;
+	align-items: center;
+	justify-content: center;
+	width: 40px;
+	height: 40px;
+	padding: 0;
+	border: none;
+	background: transparent;
+	color: inherit;
+	cursor: pointer;
+	border-radius: 0.375rem;
+	position: relative;
+	transition: background-color 0.15s ease;
+}
+.nav-toggle:hover {
+	background: rgba(255, 255, 255, 0.1);
+}
+html.dark .nav-toggle:hover {
+	background: rgba(255, 255, 255, 0.08);
+}
+
+.nav-toggle-icon {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	width: 24px;
+	height: 24px;
+	gap: 5px;
+}
+
+.nav-toggle-line {
+	display: block;
+	width: 24px;
+	height: 2px;
+	background-color: currentColor;
+	border-radius: 1px;
+	transition: transform 0.2s ease, opacity 0.2s ease;
+}
+.nav-toggle-line-top,
+.nav-toggle-line-middle,
+.nav-toggle-line-bottom {
+	transform-origin: center center;
+}
+.nav-toggle-line-middle { transition: opacity 0.15s ease; }
+
+/* Aperto: icona a X (linee top/bottom ruotano e si incontrano, middle nascosta) */
+#nav.public-nav.nav-open .nav-toggle-line-top {
+	transform: translateY(7px) rotate(45deg);
+}
+#nav.public-nav.nav-open .nav-toggle-line-middle {
+	opacity: 0;
+}
+#nav.public-nav.nav-open .nav-toggle-line-bottom {
+	transform: translateY(-7px) rotate(-45deg);
+}
+
+@media (max-width: 767px) {
+	.nav-bar {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: center;
+	}
+	.nav-toggle { display: inline-flex; }
+	#nav.public-nav .nav-menu {
+		display: none;
+		width: 100%;
+		max-height: 0;
+		overflow: hidden;
+		opacity: 0;
+		transition: max-height 0.2s ease-out, opacity 0.15s ease;
+	}
+	#nav.public-nav.nav-open .nav-menu {
+		display: flex;
+		max-height: 280px;
+		opacity: 1;
+		margin-top: 0.75rem;
+		padding-top: 0.5rem;
+		border-top: 1px solid rgba(255, 255, 255, 0.1);
+		flex-direction: column;
+		gap: 0;
+	}
+	#nav.public-nav.nav-open .nav-menu li {
+		border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+	}
+	#nav.public-nav.nav-open .nav-menu li:last-child {
+		border-bottom: none;
+	}
+	#nav.public-nav li { display: block; margin: 0; }
+	#nav.public-nav .nav-menu .nav-link {
+		display: block;
+		padding: 0.75rem 0.5rem;
+		border-radius: 0.375rem;
+	}
+	#nav.public-nav .nav-menu .nav-link:hover {
+		background: rgba(255, 255, 255, 0.08);
+	}
+}
+
+/* ===== CONTENUTI ===== */
+.content-central { min-height: 200px; padding: 15px 0; color: var(--color-text); }
+.content-central-inner { max-width: 900px; margin: 0 auto; text-align: left; }
+.content-central-inner p { color: var(--color-text); }
+.content-central-title { margin-top: 0; color: var(--color-heading); }
+html.dark .content-central-title { color: #E8F3FD; }
+
+/* Pagina Cos'è TuiLand – light mode: Domande e risposte (dl/dt/dd) sempre con testo leggibile */
+:root .content-central-inner dl,
+:root .content-central-inner dl dt,
+:root .content-central-inner dl dd,
+html:not(.dark) .content-central-inner dl,
+html:not(.dark) .content-central-inner dl dt,
+html:not(.dark) .content-central-inner dl dd {
+	color: var(--color-text) !important;
+}
+:root .content-central-inner dl dt,
+html:not(.dark) .content-central-inner dl dt {
+	color: var(--color-heading) !important;
+	font-weight: 600;
+}
+:root .content-central-inner dl dd a,
+html:not(.dark) .content-central-inner dl dd a {
+	color: var(--color-link) !important;
+}
+html:not(.dark) .content-central-inner dl dd a:hover {
+	color: var(--color-link-hover) !important;
+}
+
+/* Blocco contesto: light = sfondo chiaro, dark = sfondo scuro (solo CSS, no classi Tailwind dark:) */
+.framework-prompt {
+	background: #f1f5f9 !important;
+	color: #1e293b !important;
+	border: none;
+	border-radius: 6px;
+	padding: 20px;
+	font-family: Consolas, monospace;
+	font-size: 13px;
+	line-height: 1.5;
+	white-space: pre-wrap;
+	overflow-x: auto;
+	transition: var(--transition-theme);
+}
+.framework-prompt strong { color: #0f172a !important; }
+.framework-prompt a { color: var(--color-link) !important; }
+.framework-prompt a:hover { color: var(--color-link-hover) !important; }
+
+html.dark .framework-prompt {
+	background: #152232 !important;
+	color: #D0D0D0 !important;
+}
+html.dark .framework-prompt strong { color: #E8E8E8 !important; }
+html.dark .framework-prompt a { color: #5DADE2 !important; }
+html.dark .framework-prompt a:hover { color: #85C1E9 !important; }
+
+.content-central-footer { margin-top: 20px; color: var(--color-text-muted); }
+.content-central-footer code {
+	background: #e2e8f0 !important;
+	color: #1e293b !important;
+	padding: 2px 6px;
+	border-radius: 4px;
+}
+html.dark .content-central-footer { color: #B8B8B8; }
+html.dark .content-central-footer code {
+	background: #1E3043 !important;
+	color: #85C1E9 !important;
+	border: 1px solid #446079;
+}
+
+/* ===== FORM E INPUT (stile Tailwind UI) ===== */
+.form-esempio label {
+	display: block;
+	margin-bottom: 0.375rem;
+	font-weight: 500;
+	font-size: 0.875rem;
+	color: var(--color-text);
+}
+.form-esempio input[type="text"],
+.form-esempio input[type="email"],
+.form-esempio input[type="password"],
+.form-esempio textarea {
+	display: block;
+	width: 100%;
+	max-width: 28rem;
+	padding: 0.5rem 0.75rem;
+	margin-bottom: 1rem;
+	box-sizing: border-box;
+	font-size: 0.875rem;
+	line-height: 1.5;
+	border: 1px solid var(--color-border);
+	border-radius: 0.375rem;
+	box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+	transition: border-color 0.15s ease, box-shadow 0.15s ease;
+	background: #fff !important;
+	color: #1e293b !important;
+}
+.form-esempio input::placeholder,
+.form-esempio textarea::placeholder {
+	color: #64748b !important;
+}
+.form-esempio input:focus,
+.form-esempio textarea:focus {
+	outline: none;
+	border-color: var(--color-focus-ring);
+	box-shadow: 0 0 0 3px rgba(17, 135, 238, 0.15);
+}
+.form-esempio textarea {
+	min-height: 6rem;
+	resize: vertical;
+}
+.form-esempio-notes { margin-top: 1.25rem; color: var(--color-text-muted); font-size: 0.75rem; }
+.form-esempio-notes code { background: #e2e8f0; color: #1e293b; padding: 0.125rem 0.375rem; border-radius: 0.25rem; font-size: 0.8125rem; }
+
+/* ===== BOTTONI (stile Tailwind UI: primary, secondary) ===== */
+.btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0.5rem 1rem;
+	font-size: 0.875rem;
+	font-weight: 500;
+	line-height: 1.5;
+	border-radius: 0.375rem;
+	border: 1px solid transparent;
+	cursor: pointer;
+	transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+	text-decoration: none;
+}
+.btn:focus-visible {
+	outline: none;
+	box-shadow: 0 0 0 3px rgba(17, 135, 238, 0.35);
+}
+.btn-primary {
+	background: var(--color-nav-bg);
+	color: #fff;
+	box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+.btn-primary:hover {
+	background: #0d6fd6;
+}
+.btn-primary:active {
+	background: #0c5492;
+}
+.form-actions { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+
+.btn-secondary {
+	background: #fff;
+	color: var(--color-text);
+	border-color: var(--color-border);
+	box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+.btn-secondary:hover {
+	background: #f8fafc;
+	border-color: #cbd5e1;
+}
+.btn-secondary:active {
+	background: #f1f5f9;
+}
+.btn-link {
+	margin-left: 0.5rem;
+	color: var(--color-link);
+	background: none;
+	border: none;
+	box-shadow: none;
+	padding: 0.5rem 0.25rem;
+}
+.btn-link:hover { color: var(--color-link-hover); text-decoration: underline; }
+
+html.dark .btn-primary {
+	background: #475569;
+	color: #fff;
+}
+html.dark .btn-primary:hover { background: #64748b; }
+html.dark .btn-primary:active { background: #334155; }
+
+html.dark .btn-secondary {
+	background: #1e293b;
+	color: #E2E8F0;
+	border-color: #475569;
+}
+html.dark .btn-secondary:hover { background: #334155; border-color: #64748b; }
+html.dark .btn-secondary:active { background: #0f172a; }
+
+html.dark .form-esempio input[type="text"],
+html.dark .form-esempio input[type="email"],
+html.dark .form-esempio input[type="password"],
+html.dark .form-esempio textarea {
+	background: #152332 !important;
+	color: #D0D0D0 !important;
+	border-color: #446079 !important;
+}
+html.dark .form-esempio input::placeholder,
+html.dark .form-esempio textarea::placeholder {
+	color: #94a3b8 !important;
+}
+html.dark .form-esempio input:focus,
+html.dark .form-esempio textarea:focus {
+	border-color: #5DADE2 !important;
+	box-shadow: 0 0 0 3px rgba(93, 173, 226, 0.25);
+}
+html.dark .form-esempio-notes code {
+	background: #1E3043;
+	color: #85C1E9;
+}
+
+.messaggio {
+	padding: 15px;
+	background: #e8f5e9 !important;
+	color: #1e293b !important;
+	border-left: 4px solid #4caf50;
+	border-radius: 0 5px 5px 0;
+	margin: 15px 0;
+}
+html.dark .messaggio { background: #39485d !important; border-left-color: #52C41A; color: #D0D0D0 !important; }
+
+/* ===== FOOTER ===== */
+footer.footer-footer {
+	margin-top: 30px;
+	padding: 1.5rem 1rem 1.25rem;
+	text-align: center;
+	font-size: 13px;
+	color: var(--color-text-muted);
+	transition: var(--transition-theme);
+}
+
+.footer-link { color: var(--color-link); }
+.footer-link:hover { color: var(--color-link-hover); }
+
+.footer-nav { margin-bottom: 1rem; }
+.breadcrumb { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 0.25rem; font-size: 0.85rem; color: var(--color-text-muted); }
+.breadcrumb-item { display: inline-flex; align-items: center; }
+.breadcrumb-sep { color: var(--color-text-muted); }
+.breadcrumb a { color: var(--color-link); }
+
+/* Footer: blocchetto lingue a pill (segment control) */
+.footer-lang-switcher {
+	display: inline-flex;
+	align-items: center;
+	gap: 0;
+	padding: 0.2rem;
+	border-radius: 9999px;
+	background: var(--color-border);
+	margin-bottom: 0.75rem;
+}
+html.dark .footer-lang-switcher { background: rgba(255,255,255,0.08); }
+.footer-lang-switcher .lang-switcher-link {
+	color: var(--color-text);
+	padding: 0.35rem 0.75rem;
+	border-radius: 9999px;
+	opacity: 0.9;
+}
+html.dark .footer-lang-switcher .lang-switcher-link { color: var(--color-text-muted); }
+.footer-lang-switcher .lang-switcher-current {
+	background: var(--color-nav-bg);
+	color: var(--color-nav-text);
+	opacity: 1;
+}
+html.dark .footer-lang-switcher .lang-switcher-current { background: var(--color-nav-active-bg, #475569); color: #fff; }
+
+.footer-dark-toggle {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.5rem;
+	margin: 0 0 1rem;
+}
+.footer-dark-label { font-size: 0.9rem; color: var(--color-text-muted); }
+.footer-dark-btn {
+	background: transparent;
+	border: none;
+	border-radius: 6px;
+	padding: 0.35rem 0.5rem;
+	cursor: pointer;
+	font-size: 1.1rem;
+	line-height: 1;
+	transition: var(--transition-theme);
+	color: var(--color-text-muted);
+}
+.footer-dark-btn:hover { background: rgba(0,0,0,0.05); color: var(--color-text); }
+html.dark .footer-dark-btn:hover { background: rgba(255,255,255,0.08); color: var(--color-text); }
+
+.footer-divider {
+	border: 0;
+	border-top: 1px solid var(--color-border);
+	margin: 1rem auto 1rem;
+	max-width: 280px;
+}
+
+.footer-legal { margin: 0 0 0.5rem; }
+.footer-sep { color: var(--color-text-muted); user-select: none; }
+.footer-copy { margin: 0; font-size: 0.85rem; }
+
+/* ===== BACK TO TOP ===== */
+.back-to-top {
+	position: fixed;
+	bottom: 1.5rem;
+	right: 1.5rem;
+	width: 48px;
+	height: 48px;
+	border-radius: 50%;
+	border: 2px solid var(--color-nav-bg);
+	background: var(--color-panel-bg);
+	color: var(--color-link);
+	font-size: 1.25rem;
+	cursor: pointer;
+	opacity: 0;
+	visibility: hidden;
+	transform: translateY(10px);
+	transition: opacity 0.2s ease, visibility 0.2s ease, transform 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+	z-index: 100;
+	box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+.back-to-top.visible {
+	opacity: 1;
+	visibility: visible;
+	transform: translateY(0);
+}
+.back-to-top:hover { background: var(--color-nav-bg); color: var(--color-nav-text); }
+html.dark .back-to-top { border-color: #5DADE2; color: #5DADE2; background: #1E3043; }
+html.dark .back-to-top:hover { background: #344D66; color: #E8E8E8; }
+
+/* ===== FEED (Tuiland) ===== */
+.feed-page .feed-list { margin-top: 1rem; }
+.feed-btn-like { background: none; border: none; cursor: pointer; padding: 0.25rem 0.5rem; color: var(--color-text-muted); font-size: 1rem; transition: color 0.2s; }
+.feed-btn-like:hover:not(.feed-btn-disabled) { color: var(--color-link); }
+.feed-btn-like.liked { color: #dc2626; }
+html.dark .feed-btn-like.liked { color: #f87171; }
+.feed-btn-like.feed-btn-disabled { cursor: not-allowed; opacity: 0.7; }
+.btn-follow { padding: 0.35rem 0.75rem; border-radius: 9999px; border: 1px solid var(--color-border); background: var(--color-panel-bg); color: var(--color-text); font-size: 0.875rem; cursor: pointer; transition: background 0.2s, color 0.2s; }
+.btn-follow:hover:not(.feed-btn-disabled) { background: var(--color-nav-bg); color: var(--color-nav-text); }
+.btn-follow.is-following { background: var(--color-nav-bg); color: var(--color-nav-text); }
+.btn-follow.feed-btn-disabled { cursor: not-allowed; opacity: 0.6; }
+/* Card feed: sfondo semi-trasparente (light e dark) così si vede il pattern del body */
+.feed-card {
+	background-color: var(--color-card-bg) !important;
+	border: none !important;
+	color: var(--color-card-text);
+	transition: box-shadow 0.2s, background-color 0.2s ease, color 0.2s ease;
+}
+:root .feed-card,
+html:not(.dark) .feed-card {
+	background-color: rgba(255, 255, 255, 0.6) !important;
+}
+html.dark .feed-card {
+	background-color: rgba(30, 41, 59, 0.85) !important;
+	border: none !important;
+	color: #E8E8E8 !important;
+}
+html.dark .feed-card .feed-comments li,
+html.dark .feed-card .feed-body,
+html.dark .feed-card .feed-body-full,
+html.dark .feed-card .feed-body-preview,
+html.dark .feed-card .prose { color: #E8E8E8 !important; }
+html.dark .feed-card footer span,
+html.dark .feed-card .text-gray-500,
+html.dark .feed-card .text-gray-400 { color: #B8B8B8 !important; }
+.feed-card .prose,
+.feed-card .feed-body,
+.feed-card .feed-body-full,
+.feed-card .feed-body-preview { color: var(--color-card-text) !important; }
+.feed-card .text-gray-800,
+.feed-card .text-gray-700,
+.feed-card .text-gray-300 { color: var(--color-card-text) !important; }
+.feed-card .text-gray-500,
+.feed-card .text-gray-400,
+.feed-card footer span { color: var(--color-card-text-muted) !important; }
+.feed-card .text-gray-900 { color: var(--color-card-text) !important; }
+.feed-card .text-blue-600,
+.feed-card .text-blue-400,
+.feed-card a[href] { color: var(--color-link) !important; }
+.feed-card .bg-gray-50 { background-color: var(--color-card-bg) !important; }
+.feed-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+html.dark .feed-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.25); }
+/* Commenti: contrasto leggibile su sfondo card */
+.feed-comments { display: block; color: var(--color-card-text); }
+.feed-comments-collapsed { display: none !important; }
+.feed-comments .feed-comments-list { padding: 0.5rem 0; }
+.feed-comments li { padding: 0.5rem 0.75rem; margin-bottom: 0.25rem; border: none; border-radius: 6px; background: rgba(0, 0, 0, 0.04); color: var(--color-card-text) !important; }
+.feed-comments li:last-child { margin-bottom: 0; }
+.feed-comments li a { color: var(--color-link) !important; font-weight: 600; }
+.feed-comments li .text-gray-500,
+.feed-comments li .text-gray-400,
+.feed-comments li span:first-of-type + span { color: var(--color-card-text-muted) !important; opacity: 1; }
+html.dark .feed-comments li { background: rgba(255, 255, 255, 0.06); }
+
+/* Box “Link per condividere” e altri blocchi con sfondo chiaro in dark mode */
+.post-copy-url,
+.content-central-inner .rounded-xl.border {
+	background-color: var(--color-card-bg) !important;
+	border: none !important;
+}
+.post-permalink-input,
+.post-copy-url input {
+	background-color: var(--color-card-bg) !important;
+	border: none !important;
+	color: var(--color-card-text) !important;
+}
+
+/* Pagina TUI: textarea prompt sempre leggibile (light = sfondo chiaro) */
+#prompt-text {
+	border: 1px solid var(--color-border);
+}
+:root #prompt-text,
+html:not(.dark) #prompt-text {
+	background-color: #fff !important;
+	color: #1e293b !important;
+}
+
+/* Lista TUI simulati: stesso stile del feed (card-bg, card-text) */
+.tui-simulazione-list .rounded-lg {
+	background-color: var(--color-card-bg) !important;
+	color: var(--color-card-text) !important;
+	border: none !important;
+	transition: box-shadow 0.2s, background-color 0.2s ease, color 0.2s ease;
+}
+.tui-simulazione-list .rounded-lg:hover {
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+html.dark .tui-simulazione-list .rounded-lg:hover {
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+.tui-simulazione-list .rounded-lg p {
+	color: inherit !important;
+}
+.tui-simulazione-list .rounded-lg .text-gray-900,
+.tui-simulazione-list .rounded-lg .text-gray-800 {
+	color: var(--color-card-text) !important;
+}
+/* Card oscurati (ignorato / non utile / bloccato): in light mode sfondo più visibile e testo leggibile */
+:root .tui-simulazione-list .rounded-lg.bg-gray-100,
+html:not(.dark) .tui-simulazione-list .rounded-lg.bg-gray-100 {
+	background-color: #e2e8f0 !important;
+	color: #475569 !important;
+}
+html.dark .tui-simulazione-list .rounded-lg.bg-gray-100 {
+	background-color: rgba(255, 255, 255, 0.06) !important;
+	color: var(--color-card-text-muted) !important;
+}
+/* Etichetta [TUI bloccato] / [TUI ignorato] / [TUI non utile]: in light mode contrasto alto */
+:root .tui-simulazione-list .bg-gray-200.inline-block,
+html:not(.dark) .tui-simulazione-list .bg-gray-200.inline-block {
+	background-color: #94a3b8 !important;
+	color: #fff !important;
+	font-weight: 600;
+}
+html.dark .tui-simulazione-list .bg-gray-200.inline-block {
+	background-color: rgba(255, 255, 255, 0.1) !important;
+	color: var(--color-card-text-muted) !important;
+}
+.tui-simulazione-list > p.italic {
+	color: var(--color-text-muted) !important;
+}
+#prompt-text::placeholder {
+	color: #64748b;
+}
+html.dark #prompt-text {
+	background-color: #1e293b !important;
+	color: #E8E8E8 !important;
+}
+html.dark #prompt-text::placeholder {
+	color: #94a3b8;
+}
+
+/* Pagina Registrazione: input sempre leggibili (light = sfondo chiaro) */
+#reg_email,
+#reg_password,
+#reg_alias {
+	border: 1px solid var(--color-border);
+}
+:root #reg_email,
+:root #reg_password,
+:root #reg_alias,
+html:not(.dark) #reg_email,
+html:not(.dark) #reg_password,
+html:not(.dark) #reg_alias {
+	background-color: #fff !important;
+	color: #1e293b !important;
+}
+html.dark #reg_email,
+html.dark #reg_password,
+html.dark #reg_alias {
+	background-color: #1e293b !important;
+	color: #E8E8E8 !important;
+	border-color: #475569;
+}
+
+/* Pagina Login: input leggibili in light mode */
+:root .form-login input[type="text"],
+:root .form-login input[type="email"],
+:root .form-login input[type="password"],
+html:not(.dark) .form-login input[type="text"],
+html:not(.dark) .form-login input[type="email"],
+html:not(.dark) .form-login input[type="password"] {
+	background-color: #fff !important;
+	color: #1e293b !important;
+}

@@ -1,0 +1,6 @@
+/**
+ * FRAMEWORK - Dark mode area pubblica
+ * Non più caricato: il dark mode usa la variante dark: di Tailwind con classe .dark su <html>.
+ * Vedi: https://tailwindcss.com/docs/dark-mode
+ * Gli stili dark sono applicati tramite utility dark: nel markup (header.inc.php, contenuti, footer).
+ */
