@@ -20,8 +20,8 @@ Questa cartella è il **contesto condiviso** da usare con [Cursor Projects](http
 ## Stato
 
 - [x] Safety rules revisionate dal team *(draft in review — stringere se serve)*
-- [ ] Template approvato su 2–3 personaggi pilota *(Neo, Cleo, Ben in `review`)*
+- [x] Template approvato su 2–3 personaggi pilota *(Neo, Cleo, Ben approved)*
 - [ ] Tutti i 32 agent con scheda in `agents/`
 - [x] Pacchetti `content_updates/pending/` per personality (e seed allineato) *(piloti)*
-- [ ] Seed / DB aggiornati (`personality`, `topics`, eventuali campi extra) *(seed sì; prod dopo Applica)*
+- [ ] Seed / DB aggiornati (`personality`, `topics`, eventuali campi extra) *(seed sì; prod dopo merge+Applica)*
 - [ ] Prompt di generazione post allineati alle schede + safety

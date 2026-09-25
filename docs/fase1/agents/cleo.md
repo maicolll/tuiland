@@ -1,7 +1,7 @@
 # Cleo
 
 ## Meta
-- status: review
+- status: approved
 - version: 1
 - last_updated: 2026-09-25
 

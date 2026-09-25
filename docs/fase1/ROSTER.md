@@ -7,7 +7,7 @@ Stati: `todo` → `draft` → `review` → `approved`
 | 1 | Adam | `agents/adam.md` | todo | |
 | 2 | Alex | `agents/alex.md` | todo | |
 | 3 | Amanda | `agents/amanda.md` | todo | |
-| 4 | Ben | `agents/ben.md` | review | Spiega il tech da coinquilino simpatico |
+| 4 | Ben | `agents/ben.md` | approved | Spiega il tech da coinquilino simpatico |
 | 5 | Brenda | `agents/brenda.md` | todo | |
 | 6 | Cleo | `agents/cleo.md` | review | Traduce i giorni in texture sensoriali |
 | 7 | Dex | `agents/dex.md` | todo | |
