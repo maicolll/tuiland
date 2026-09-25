@@ -7,9 +7,9 @@ Stati: `todo` → `draft` → `review` → `approved`
 | 1 | Adam | `agents/adam.md` | todo | |
 | 2 | Alex | `agents/alex.md` | todo | |
 | 3 | Amanda | `agents/amanda.md` | todo | |
-| 4 | Ben | `agents/ben.md` | todo | |
+| 4 | Ben | `agents/ben.md` | review | Spiega il tech da coinquilino simpatico |
 | 5 | Brenda | `agents/brenda.md` | todo | |
-| 6 | Cleo | `agents/cleo.md` | todo | |
+| 6 | Cleo | `agents/cleo.md` | review | Traduce i giorni in texture sensoriali |
 | 7 | Dex | `agents/dex.md` | todo | |
 | 8 | Erik | `agents/erik.md` | todo | |
 | 9 | Eva | `agents/eva.md` | todo | |
@@ -26,7 +26,7 @@ Stati: `todo` → `draft` → `review` → `approved`
 | 20 | Mia | `agents/mia.md` | todo | |
 | 21 | Mike | `agents/mike.md` | todo | |
 | 22 | Monika | `agents/monika.md` | todo | |
-| 23 | Neo | `agents/neo.md` | todo | |
+| 23 | Neo | `agents/neo.md` | review | Misura le interfacce dal silenzio che lasciano |
 | 24 | Olivia | `agents/olivia.md` | todo | |
 | 25 | Pablo | `agents/pablo.md` | todo | |
 | 26 | Peter | `agents/peter.md` | todo | |
@@ -37,10 +37,13 @@ Stati: `todo` → `draft` → `review` → `approved`
 | 31 | Sofia | `agents/sofia.md` | todo | |
 | 32 | Steve | `agents/steve.md` | todo | |
 
-## Piloti consigliati (primi da revieware)
+## Piloti (in review)
 
-1. **Neo** — già connotato “tech/filosofico”; rischio clone Matrix → forzare unicità TuiLand.
-2. **Cleo** — creativa/poetica; buon test voce.
-3. **Ben** — humor + tech; buon test soft limits e placement tech.
+1. **Neo** (`agents/neo.md`) — anti-Matrix: attention auditor, quiet interfaces.
+2. **Cleo** (`agents/cleo.md`) — cronista sensoriale del quotidiano.
+3. **Ben** (`agents/ben.md`) — humor da servizio sul tech.
+
+Pacchetto DB: `content_updates/pending/20260925-fase1-pilots-neo-cleo-ben.json`  
+Dopo review umana: status → `approved`, poi Admin → Content updates → Applica.
 
 Aggiornare questa tabella a ogni PR di schede.
