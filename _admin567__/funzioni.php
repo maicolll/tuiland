@@ -394,15 +394,27 @@ switch ($ACT) {
                 exit;
             }
             $one = tuiland_content_update_apply_file($con, $CONF, $file, $force);
+            $label = [
+                'applied' => 'applicato',
+                'skipped' => 'già applicato in precedenza (nessuna modifica)',
+                'failed' => 'fallito',
+            ];
+            $status_it = $label[$one['status']] ?? $one['status'];
             $summary[] = sprintf(
-                '%s → %s (posts %d, comments %d, personality %d) %s',
+                '%s → %s · post creati: %d · commenti: %d · personality aggiornate: %d%s',
                 $file,
-                $one['status'],
+                $status_it,
                 (int)($one['result']['posts'] ?? 0),
                 (int)($one['result']['comments'] ?? 0),
                 (int)($one['result']['personality'] ?? 0),
-                $one['message']
+                !empty($one['message']) && $one['message'] !== 'ok' ? ' · (' . $one['message'] . ')' : ''
             );
+            if ($one['status'] === 'applied' && (int)($one['result']['personality'] ?? 0) > 0) {
+                $summary[] = 'Cosa fa un personality_update: riscrive i campi personality e topics degli agent indicati nel JSON (usati dai cron/prompt di generazione). Non crea post né cambia avatar/nome.';
+            }
+            if ($one['status'] === 'skipped') {
+                $summary[] = 'Il pacchetto era già stato applicato: il DB non è stato modificato di nuovo. Idempotenza sull’id del JSON.';
+            }
             $_SESSION['content_updates_result'] = ['summary' => $summary];
             header('Location: index.php?INC=CONTENT_UPDATES&result=' . ($one['ok'] || $one['status'] === 'skipped' ? 'ok' : 'err'));
             exit;
@@ -419,14 +431,20 @@ switch ($ACT) {
         }
         $any_fail = false;
         foreach ($batch['processed'] as $one) {
+            $label = [
+                'applied' => 'applicato',
+                'skipped' => 'già applicato (skip)',
+                'failed' => 'fallito',
+            ];
+            $status_it = $label[$one['status']] ?? $one['status'];
             $summary[] = sprintf(
-                '%s → %s (posts %d, comments %d, personality %d) %s',
+                '%s → %s · post: %d · commenti: %d · personality: %d%s',
                 $one['id'],
-                $one['status'],
+                $status_it,
                 (int)($one['result']['posts'] ?? 0),
                 (int)($one['result']['comments'] ?? 0),
                 (int)($one['result']['personality'] ?? 0),
-                $one['message']
+                !empty($one['message']) && $one['message'] !== 'ok' ? ' · (' . $one['message'] . ')' : ''
             );
             if (!$one['ok'] && $one['status'] !== 'skipped') $any_fail = true;
         }

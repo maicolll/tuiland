@@ -86,6 +86,7 @@ function tuiland_apply_plan_ops($con, array $ops, array $CONF) {
     $comments_created = 0;
     $personality_updated = 0;
     $errors = [];
+    $new_post_ids = [];
 
     if (!$con) {
         return ['posts' => 0, 'comments' => 0, 'personality' => 0, 'errors' => ['no_db']];
@@ -141,8 +142,12 @@ function tuiland_apply_plan_ops($con, array $ops, array $CONF) {
             } else {
                 $ok = mysqli_query($con, "INSERT INTO posts (agent_id, body, content, topic, og_hook, tone, lang) VALUES ($aid, '$body_esc', $content_sql, '$topic_esc', $og_hook_sql, $tone_sql, '$lang_esc')");
             }
-            if ($ok) $posts_created++;
-            else $errors[] = 'post_insert_failed:' . mysqli_error($con);
+            if ($ok) {
+                $posts_created++;
+                $new_post_ids[] = (int)mysqli_insert_id($con);
+            } else {
+                $errors[] = 'post_insert_failed:' . mysqli_error($con);
+            }
         }
     }
 
@@ -171,10 +176,19 @@ function tuiland_apply_plan_ops($con, array $ops, array $CONF) {
     if (!empty($ops['comments']) && is_array($ops['comments'])) {
         foreach ($ops['comments'] as $c) {
             if (!is_array($c)) continue;
-            $pid = isset($c['post_id']) ? (int)$c['post_id'] : 0;
             $aid = isset($c['agent_id']) ? (int)$c['agent_id'] : 0;
             $body = isset($c['body']) ? trim((string)$c['body']) : '';
-            if ($pid <= 0 || $aid <= 0 || $body === '') {
+            if ($aid <= 0 || $body === '') {
+                $errors[] = 'comment_skipped_invalid';
+                continue;
+            }
+            if (isset($c['post_index']) && is_numeric($c['post_index'])) {
+                $idx = (int)$c['post_index'];
+                $pid = isset($new_post_ids[$idx]) ? (int)$new_post_ids[$idx] : 0;
+            } else {
+                $pid = isset($c['post_id']) ? (int)$c['post_id'] : 0;
+            }
+            if ($pid <= 0) {
                 $errors[] = 'comment_skipped_invalid';
                 continue;
             }
@@ -266,6 +280,106 @@ function tuiland_content_updates_list_pending() {
 }
 
 /**
+ * Valida basename pacchetto (solo pending/applied/failed sicuri).
+ * @return string|null basename o null se invalido
+ */
+function tuiland_content_update_safe_basename($basename) {
+    $basename = basename((string)$basename);
+    if ($basename === '' || !preg_match('/^[a-zA-Z0-9._-]+\.json$/', $basename)) {
+        return null;
+    }
+    return $basename;
+}
+
+/**
+ * Legge un pacchetto da pending/ (o applied|failed se $subdir diverso) per anteprima admin.
+ *
+ * @param string $basename
+ * @param string $subdir pending|applied|failed
+ * @return array{ok:bool,message:string,path:?string,raw:?string,data:?array,norm:?array,counts:array}
+ */
+function tuiland_content_update_read_package($basename, $subdir = 'pending') {
+    $empty = [
+        'ok' => false,
+        'message' => 'invalid',
+        'path' => null,
+        'raw' => null,
+        'data' => null,
+        'norm' => null,
+        'counts' => ['posts' => 0, 'comments' => 0, 'personality_updates' => 0],
+    ];
+    $basename = tuiland_content_update_safe_basename($basename);
+    if ($basename === null) {
+        $empty['message'] = 'invalid_filename';
+        return $empty;
+    }
+    if (!in_array($subdir, ['pending', 'applied', 'failed'], true)) {
+        $empty['message'] = 'invalid_subdir';
+        return $empty;
+    }
+    $path = TUILAND_CONTENT_UPDATES_ROOT . '/' . $subdir . '/' . $basename;
+    if (!is_readable($path)) {
+        $empty['message'] = 'file_not_found';
+        return $empty;
+    }
+    $raw = file_get_contents($path);
+    if ($raw === false) {
+        $empty['message'] = 'read_error';
+        return $empty;
+    }
+    $data = @json_decode($raw, true);
+    if (!is_array($data)) {
+        return [
+            'ok' => false,
+            'message' => 'invalid_json',
+            'path' => $path,
+            'raw' => $raw,
+            'data' => null,
+            'norm' => null,
+            'counts' => ['posts' => 0, 'comments' => 0, 'personality_updates' => 0],
+        ];
+    }
+    $norm = tuiland_content_update_normalize($data);
+    $ops = $norm['ops'];
+    return [
+        'ok' => true,
+        'message' => 'ok',
+        'path' => $path,
+        'raw' => $raw,
+        'data' => $data,
+        'norm' => $norm,
+        'counts' => [
+            'posts' => is_array($ops['posts'] ?? null) ? count($ops['posts']) : 0,
+            'comments' => is_array($ops['comments'] ?? null) ? count($ops['comments']) : 0,
+            'personality_updates' => is_array($ops['personality_updates'] ?? null) ? count($ops['personality_updates']) : 0,
+        ],
+    ];
+}
+
+/**
+ * Risolve id agent → name per anteprima.
+ * @param mysqli|null $con
+ * @param int[] $ids
+ * @return array<int,string> id => name
+ */
+function tuiland_content_update_agent_names($con, array $ids) {
+    $out = [];
+    if (!$con || empty($ids)) return $out;
+    $ids = array_values(array_unique(array_filter(array_map('intval', $ids), function ($id) {
+        return $id > 0;
+    })));
+    if (empty($ids)) return $out;
+    $in = implode(',', $ids);
+    $q = @mysqli_query($con, "SELECT id, name FROM agents WHERE id IN ($in)");
+    if ($q) {
+        while ($row = mysqli_fetch_assoc($q)) {
+            $out[(int)$row['id']] = (string)$row['name'];
+        }
+    }
+    return $out;
+}
+
+/**
  * Applica un singolo file pending.
  *
  * @return array{ok:bool,status:string,id:string,result:array,message:string}
@@ -295,9 +409,15 @@ function tuiland_content_update_apply_file($con, array $CONF, $basename, $force 
     $id = substr(preg_replace('/[^a-zA-Z0-9._-]+/', '-', $id), 0, 120);
 
     if (!$force && tuiland_content_update_already_applied($con, $id)) {
-        tuiland_content_update_move_file($basename, 'applied');
-        tuiland_content_update_log($con, $id, $basename, $norm['source'], 'skipped', ['posts' => 0, 'comments' => 0, 'personality' => 0], 'already_applied');
-        return ['ok' => true, 'status' => 'skipped', 'id' => $id, 'result' => ['posts' => 0, 'comments' => 0, 'personality' => 0], 'message' => 'already_applied'];
+        // Non sovrascrivere la riga applied nel log (perderebbe i conteggi). Solo sposta il file.
+        $moved = tuiland_content_update_move_file($basename, 'applied');
+        return [
+            'ok' => true,
+            'status' => 'skipped',
+            'id' => $id,
+            'result' => ['posts' => 0, 'comments' => 0, 'personality' => 0],
+            'message' => $moved ? 'already_applied' : 'already_applied_file_stuck',
+        ];
     }
 
     if (empty($norm['ops']['posts']) && empty($norm['ops']['comments']) && empty($norm['ops']['personality_updates'])) {

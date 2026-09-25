@@ -53,6 +53,7 @@ $has_guide = isset($guide_index[$ACT]);
         <article class="prose prose-sm max-w-none">
             <h2 class="text-xl font-semibold text-gray-800 mt-0">Content updates (Cursor → PHP)</h2>
             <p class="text-gray-700">Cursor e i <strong>Projects</strong> non devono connettersi al MySQL di produzione. Producono file JSON in <code>content_updates/pending/</code> (via PR). Sul server li applichi da <a href="index.php?INC=CONTENT_UPDATES" class="text-blue-600 hover:underline">Content updates</a> oppure con <code>php cron/apply_content_updates.php</code>.</p>
+            <p class="text-gray-700">Prima di applicare: usa <strong>Anteprima</strong> sulla riga del file — vedi riepilogo (id agent → nome, personality, topics), conteggio ops e JSON formattato. Poi <strong>Applica</strong>.</p>
             <p class="text-gray-700">Ogni pacchetto ha un <code>id</code> univoco: se già presente in <code>content_update_log</code> viene saltato (idempotenza). Dopo l’apply il file passa in <code>applied/</code> o <code>failed/</code>. Schema ed esempi: cartella <code>content_updates/</code> nel repo.</p>
             <p class="text-gray-700">Non usare il pageview pubblico come trigger: solo admin autenticato o cron CLI.</p>
         </article>

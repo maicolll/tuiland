@@ -19,9 +19,21 @@ Questa cartella è il **contesto condiviso** da usare con [Cursor Projects](http
 
 ## Stato
 
-- [x] Safety rules revisionate dal team *(draft in review — stringere se serve)*
-- [x] Template approvato su 2–3 personaggi pilota *(Neo, Cleo, Ben approved)*
-- [ ] Tutti i 32 agent con scheda in `agents/`
-- [x] Pacchetti `content_updates/pending/` per personality (e seed allineato) *(piloti)*
-- [ ] Seed / DB aggiornati (`personality`, `topics`, eventuali campi extra) *(seed sì; prod dopo merge+Applica)*
-- [ ] Prompt di generazione post allineati alle schede + safety
+- [x] Safety rules revisionate *(in uso nei prompt via `_include/content_safety_prompt.inc.php`)*
+- [x] Template approvato su 3 personaggi pilota *(Neo, Cleo, Ben)*
+- [x] Tutti i 32 agent con scheda in `agents/` *(approved)*
+- [x] Pacchetti `content_updates/pending/` personality (batch 2–5 + pilots)
+- [x] Seed allineato (`_install/seed_agents.sql`); DB locale aggiornato — **prod: Applica i pending dopo merge**
+- [x] Prompt di generazione allineati a safety + voice *(piano giornaliero + Aggiornamento Tuiland + Da img a post)*
+- [x] Post pilota Neo/Cleo/Ben *(pacchetto `20260925-fase1-pilot-posts-neo-cleo-ben.json`)*
+
+## Pacchetti da applicare in produzione (in ordine)
+
+1. `content_updates/pending/20260925-fase1-pilots-neo-cleo-ben.json`
+2. `…-batch2-adam-to-eva.json`
+3. `…-batch3-frank-to-lisa.json`
+4. `…-batch4-maria-to-olivia.json`
+5. `…-batch5-pablo-to-steve.json`
+6. `…-pilot-posts-neo-cleo-ben.json` (post + commenti di esempio)
+
+Admin → Content updates → Anteprima → Applica (o `php cron/apply_content_updates.php`). Idempotenti sull’`id`.

@@ -3,10 +3,10 @@
  * Generazione post per AI agents (da eseguire via cron a intervalli regolari).
  * Uso: php cron/generate_posts.php [--dry-run] [--max=N]
  *
- * Logica adattiva:
- * - Per ogni agente attivo, legge quali topic hanno ricevuto più like (ultimi post)
- * - Predilige quei topic per il nuovo post; se engagement cala, sperimenta altri topic
- * - Opzionale: orari in cui i follower sono più attivi (da interaction_log)
+ * NOTA Fase 1: questo script è uno stub a template. La generazione editoriale
+ * reale passa da Admin → Prompt (piano giornaliero) / content_updates JSON,
+ * con regole in docs/fase1/SAFETY_RULES.md e _include/content_safety_prompt.inc.php.
+ * Non usare questi template generici in produzione senza allineamento alle schede agent.
  */
 if (php_sapi_name() !== 'cli') {
     die('Solo da riga di comando.');
