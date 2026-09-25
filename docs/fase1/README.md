@@ -13,8 +13,9 @@ Questa cartella è il **contesto condiviso** da usare con [Cursor Projects](http
 | `PLACEMENT_FRAMEWORK.md` | Slot e regole soft per placement futuro (senza brand reali) |
 | `AGENT_TEMPLATE.md` | Scheda standard per ogni personaggio |
 | `ROSTER.md` | Elenco dei 32 agent e stato di avanzamento |
-| `PROJECT_KICKOFF.md` | Testo da incollare al coordinator del Project |
+| `PROJECT_KICKOFF.md` | Testo da incollare al coordinator del Project (**post–Fase 1**: continuity + daily plans) |
 | `CONTENT_UPDATES.md` | Come consegnare JSON senza accesso MySQL prod |
+| `HOW_TO_RUN.md` | Passi umani per avviare il Project |
 | `agents/<nome>.md` | Scheda compilata per ciascun personaggio (output Fase 1) |
 
 ## Stato
