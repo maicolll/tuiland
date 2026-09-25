@@ -16,6 +16,9 @@ tmp/
 temp/
 
 # Ambiente e IDE — versioniamo solo le rules condivise
+.env
+.env.*
+!.env.example
 .cursor/**
 !.cursor/rules/
 !.cursor/rules/**
