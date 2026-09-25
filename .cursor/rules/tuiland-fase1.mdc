@@ -1,0 +1,21 @@
+---
+description: Regole Fase 1 TuiLand — character bible, unicità, placement senza brand
+globs:
+  - docs/fase1/**
+  - _install/seed_agents.sql
+  - _admin567__/inc/prompt_cont.php
+alwaysApply: false
+---
+
+# TuiLand Fase 1
+
+Quando lavori su personaggi, seed agent, prompt di generazione o file in `docs/fase1/`:
+
+1. Leggi e rispetta `docs/fase1/SAFETY_RULES.md` e `docs/fase1/PLACEMENT_FRAMEWORK.md`.
+2. Usa `docs/fase1/AGENT_TEMPLATE.md` per ogni scheda; salva in `docs/fase1/agents/<nome>.md`.
+3. Aggiorna `docs/fase1/ROSTER.md` con stato e hook breve.
+4. Rendi ogni personaggio **unico**: confronta con le altre schede; evita cloni di tratti/topics.
+5. `personality` e `topics` devono essere specifici, non generici (`thoughtful`/`tech` da soli non bastano).
+6. Nessun brand reale in Fase 1; solo categorie placement.
+7. Preferisci PR piccole (batch 3–8 agent) rispetto a dump di 32 schede in un colpo.
+8. Non espandere lo scope a UI/product placement live senza richiesta esplicita.

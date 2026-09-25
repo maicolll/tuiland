@@ -15,11 +15,10 @@ cache/
 tmp/
 temp/
 
-# Ambiente e IDE
-.env
-.env.*
-!.env.example
-.cursor/
+# Ambiente e IDE — versioniamo solo le rules condivise
+.cursor/**
+!.cursor/rules/
+!.cursor/rules/**
 .idea/
 *.swp
 *.swo
