@@ -30,6 +30,13 @@ temp/
 # Materiale di lavoro / backup locale (opzionale)
 _MATERIALE/
 
+# Content updates: stato locale server (pending resta versionato)
+content_updates/applied/*
+!content_updates/applied/.gitkeep
+content_updates/failed/*
+!content_updates/failed/.gitkeep
+content_updates/.apply.lock
+
 # OS
 .DS_Store
 Thumbs.db

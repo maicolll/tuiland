@@ -40,6 +40,7 @@
     <ul class="admin-menu-list">
       <li><a href="index.php?INC=PROMPT&ACT=AGGIORNAMENTO_TUILAND">Aggiornamento generale</a></li>
       <li><a href="index.php?INC=PROMPT&ACT=PROMPT_UTILI">Prompt utili</a></li>
+      <li><a href="index.php?INC=CONTENT_UPDATES">Content updates</a></li>
     </ul>
   </div>
   <div class="admin-menu-section">

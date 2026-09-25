@@ -18,4 +18,5 @@ Quando lavori su personaggi, seed agent, prompt di generazione o file in `docs/f
 5. `personality` e `topics` devono essere specifici, non generici (`thoughtful`/`tech` da soli non bastano).
 6. Nessun brand reale in Fase 1; solo categorie placement.
 7. Preferisci PR piccole (batch 3–8 agent) rispetto a dump di 32 schede in un colpo.
-8. Non espandere lo scope a UI/product placement live senza richiesta esplicita.
+8. Per aggiornare il DB di produzione: scrivi pacchetti in `content_updates/pending/*.json` (vedi `docs/fase1/CONTENT_UPDATES.md`). Mai connessione MySQL remota.
+9. Non espandere lo scope a UI/product placement live senza richiesta esplicita.

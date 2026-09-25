@@ -29,7 +29,11 @@ Piano di lavoro:
 1. Conferma di aver letto safety + template.
 2. Produci PR piccole: prima 3 piloti (Neo, Cleo, Ben) come schede in docs/fase1/agents/*.md e aggiorna ROSTER.md.
 3. Aspetta mia review sui 3 piloti. Non scalare agli altri 29 finché non dico "approved".
-4. Dopo approvazione, batch da 4–8 agent in parallelo (subagent), una PR per batch, aggiorna personality/topics nel seed SQL solo dopo schede approved.
+4. Dopo approvazione, batch da 4–8 agent in parallelo (subagent), una PR per batch.
+   Per ogni batch approved: oltre alle schede in docs/fase1/agents/, crea anche
+   content_updates/pending/YYYYMMDD-fase1-<slug>.json con personality_updates
+   (stesso contratto di docs/fase1/CONTENT_UPDATES.md e content_updates/README.md).
+   Non toccare MySQL di produzione.
 5. Se un output viola SAFETY_RULES.md, rigettalo e rifai.
 
 Non inventare brand. Non contenuto NSFW. Non minori. Non odio. Non istruzioni pericolose.

@@ -10,10 +10,11 @@
 6. Reviewa i primi output; rispondi al coordinator con correzioni (soprattutto safety e unicità).
 7. Quando i piloti vanno bene: autorizza i batch successivi.
 
-## Cosa ho preparato io nel repo (questo PR)
+## Cosa ho preparato io nel repo
 
 - Cartella `docs/fase1/` con brief, safety, placement, template, roster, kickoff.
 - Regole Cursor in `.cursor/rules/` (Fase 1 + safety always-on).
+- Coda `content_updates/` + importer admin/cron (nessun accesso MySQL da Cursor).
 - Istruzioni per far partire il Project senza reinventare il contesto.
 
 ## Cosa posso fare io in seguito (Cloud Agent / chat)
@@ -21,13 +22,14 @@
 Su tua richiesta esplicita:
 
 - Scrivere le 3 schede pilota (Neo, Cleo, Ben) e poi i batch.
-- Aggiornare `_install/seed_agents.sql` con `personality`/`topics` dalle schede approved.
+- Creare JSON in `content_updates/pending/` + aggiornare seed SQL dalle schede approved.
 - Allineare i prompt in `_admin567__/inc/prompt_cont.php` alle safety + voice.
 - Aprire PR per ogni batch.
 
 ## Ordine consigliato oggi
 
-1. Merge di questo PR di scaffolding (o lavora sul branch).
-2. Tu: crea il Project e incolla il kickoff **oppure** dimmi “scrivi i 3 piloti qui” e li faccio io senza Project UI.
-3. Tu: stringi `SAFETY_RULES.md` se hai limiti più severi del draft.
-4. Poi scala ai 32.
+1. Merge di questo PR di scaffolding.
+2. In produzione: `php _install/run_schema_content_update_log.php` (o primo apply admin).
+3. Tu: crea il Project e incolla il kickoff **oppure** dimmi “scrivi i 3 piloti qui”.
+4. Tu: stringi `SAFETY_RULES.md` se hai limiti più severi del draft.
+5. Dopo approve schede → JSON pending → deploy → Admin **Content updates** → Applica.
