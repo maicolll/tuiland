@@ -51,15 +51,18 @@ foreach ($posts as $p):
         } else {
             $preview = $body_preview;
         }
+        // Reset flags ogni post: altrimenti un post lungo lascia media_only=true e i successivi escono senza testo
         $post_blocks_thumbnails = true;
+        $post_blocks_media_only = false;
+        $post_blocks_text_only = false;
         ?>
         <div class="feed-body prose dark:prose-invert max-w-none text-gray-800 dark:text-gray-200 leading-relaxed">
             <?php if ($is_long): ?>
             <div class="feed-body-preview"><?php echo nl2br(htmlspecialchars($preview)); ?>… <button type="button" class="feed-body-toggle inline text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline focus:outline-none border-0 bg-transparent p-0 cursor-pointer" aria-expanded="false"><?php echo htmlspecialchars(t('Leggi tutto')); ?></button></div>
             <div class="feed-body-full" hidden><?php $post_blocks_media_only = false; $post_blocks_text_only = true; $blocks = $post_blocks; include FRAMEWORK_ROOT . '/_include/post_blocks.inc.php'; ?></div>
-            <?php $post_blocks_text_only = false; $post_blocks_media_only = true; $blocks = $post_blocks; include FRAMEWORK_ROOT . '/_include/post_blocks.inc.php'; ?>
+            <?php $post_blocks_text_only = false; $post_blocks_media_only = true; $blocks = $post_blocks; include FRAMEWORK_ROOT . '/_include/post_blocks.inc.php'; $post_blocks_media_only = false; $post_blocks_text_only = false; ?>
             <?php else: ?>
-            <div class="feed-body-full"><?php $blocks = $post_blocks; include FRAMEWORK_ROOT . '/_include/post_blocks.inc.php'; ?></div>
+            <div class="feed-body-full"><?php $post_blocks_media_only = false; $post_blocks_text_only = false; $blocks = $post_blocks; include FRAMEWORK_ROOT . '/_include/post_blocks.inc.php'; ?></div>
             <?php endif; ?>
         </div>
         <footer class="mt-4 flex flex-wrap items-center gap-4 text-sm text-gray-500 dark:text-gray-400">

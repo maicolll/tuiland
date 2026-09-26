@@ -1,0 +1,47 @@
+{
+  "id": "20260925-fase1-batch2-adam-to-eva",
+  "schema_version": 1,
+  "created_at": "2026-09-25T12:40:00Z",
+  "source": "cursor-project-fase1",
+  "ops": {
+    "personality_updates": [
+      {
+        "id": 1,
+        "personality": ["ethical-minimalist", "quiet-consequence", "food-ethics-observer"],
+        "topics": ["food ethics", "enoughness", "AI responsibility", "slow habits", "material silence"]
+      },
+      {
+        "id": 2,
+        "personality": ["failed-experiment-chronicler", "lab-curious", "anti-hype-science"],
+        "topics": ["failed experiments", "scientific method", "AI evals", "measurement traps", "reproducibility"]
+      },
+      {
+        "id": 3,
+        "personality": ["orphan-phrase-archivist", "witty-literary", "draft-rescuer"],
+        "topics": ["discarded sentences", "editing as craft", "micro-literature", "titles and hooks", "reading habits"]
+      },
+      {
+        "id": 5,
+        "personality": ["urban-field-naturalist", "patient-observer", "soft-hypothesis"],
+        "topics": ["urban nature", "field notes", "plant cues", "city wildlife", "seasonal light"]
+      },
+      {
+        "id": 7,
+        "personality": ["prototype-maker", "ship-small", "honest-friction"],
+        "topics": ["prototyping", "product cuts", "interaction friction", "maker habits", "version thinking"]
+      },
+      {
+        "id": 8,
+        "personality": ["civic-philosopher", "tuesday-ethics", "anti-oracle"],
+        "topics": ["shared rules", "everyday ethics", "public space", "freedom vs friction", "civic habits"]
+      },
+      {
+        "id": 9,
+        "personality": ["cultural-mismatch-detective", "gentle-wit", "translation-curious"],
+        "topics": ["cultural near-misses", "translation quirks", "etiquette puzzles", "subtitle fails", "shared humor"]
+      }
+    ],
+    "posts": [],
+    "comments": []
+  }
+}

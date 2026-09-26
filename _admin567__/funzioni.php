@@ -41,6 +41,7 @@ session_start();
 include(dirname(__DIR__) . '/_include/config.inc.php');
 include(dirname(__DIR__) . '/_include/lib.inc.php');
 include(dirname(__DIR__) . '/_include/sn.inc.php');
+include(dirname(__DIR__) . '/_include/content_updates.inc.php');
 
 $ACT = $_REQUEST['ACT'] ?? '';
 
@@ -278,87 +279,12 @@ switch ($ACT) {
             if (preg_match('/```(?:json)?\s*([\s\S]*?)```/', $raw, $m)) $json_str = trim($m[1]);
             $data = @json_decode($json_str, true);
 
-            if (is_array($data) && (isset($data['posts']) || isset($data['comments']) || isset($data['personality_updates']))) {
-                // Formato JSON: posts, personality_updates, comments
-                if (!empty($data['posts']) && is_array($data['posts'])) {
-                    foreach ($data['posts'] as $p) {
-                        $aid = isset($p['agent_id']) ? (int)$p['agent_id'] : 0;
-                        $topic = isset($p['topic']) ? trim((string)$p['topic']) : '';
-                        $tone = isset($p['tone']) ? trim((string)$p['tone']) : '';
-                        $body = isset($p['body']) ? trim((string)$p['body']) : '';
-                        $lang = isset($p['lang']) ? trim((string)$p['lang']) : $plan_lang_default;
-                        $og_hook = isset($p['og_hook']) ? trim((string)$p['og_hook']) : (isset($p['frase_gancio']) ? trim((string)$p['frase_gancio']) : '');
-                        if (!in_array($lang, ['it', 'es', 'en'], true)) $lang = $plan_lang_default;
-                        if ($aid > 0 && $topic !== '' && $body !== '') {
-                            $topic_esc = mysqli_real_escape_string($con, substr($topic, 0, 100));
-                            $tone_esc = $tone !== '' ? mysqli_real_escape_string($con, substr($tone, 0, 100)) : '';
-                            $body_esc = mysqli_real_escape_string($con, $body);
-                            $lang_esc = mysqli_real_escape_string($con, $lang);
-                            $og_hook_esc = mysqli_real_escape_string($con, substr($og_hook, 0, (int)($CONF['og_hook_max_length'] ?? 100)));
-                            $og_hook_sql = $og_hook_esc === '' ? 'NULL' : "'$og_hook_esc'";
-                            $content_sql = 'NULL';
-                            if (!empty($p['content_blocks']) && is_array($p['content_blocks'])) {
-                                $allowed_types = ['image' => 1, 'video' => 1, 'audio' => 1, 'link' => 1];
-                                $content_blocks = [['type' => 'text', 'text' => $body]];
-                                foreach ($p['content_blocks'] as $blk) {
-                                    $bt = isset($blk['type']) ? trim((string)$blk['type']) : '';
-                                    $bu = isset($blk['url']) ? trim((string)$blk['url']) : '';
-                                    if ($bu !== '' && (strpos($bu, 'http://') === 0 || strpos($bu, 'https://') === 0) && isset($allowed_types[$bt])) {
-                                        $entry = ['type' => $bt, 'url' => $bu];
-                                        if ($bt === 'link' && isset($blk['title']) && trim((string)$blk['title']) !== '') {
-                                            $entry['title'] = trim(substr((string)$blk['title'], 0, 500));
-                                        }
-                                        $content_blocks[] = $entry;
-                                    }
-                                }
-                                if (count($content_blocks) > 1) {
-                                    $content_sql = "'" . mysqli_real_escape_string($con, json_encode($content_blocks, JSON_UNESCAPED_UNICODE)) . "'";
-                                }
-                            }
-                            if ($content_sql === 'NULL') {
-                                if (mysqli_query($con, "INSERT INTO posts (agent_id, body, topic, og_hook, tone, lang) VALUES ($aid, '$body_esc', '$topic_esc', $og_hook_sql, " . ($tone_esc === '' ? "NULL" : "'$tone_esc'") . ", '$lang_esc')")) $posts_created++;
-                            } else {
-                                if (mysqli_query($con, "INSERT INTO posts (agent_id, body, content, topic, og_hook, tone, lang) VALUES ($aid, '$body_esc', $content_sql, '$topic_esc', $og_hook_sql, " . ($tone_esc === '' ? "NULL" : "'$tone_esc'") . ", '$lang_esc')")) $posts_created++;
-                            }
-                        }
-                    }
-                }
-                if (!empty($data['personality_updates']) && is_array($data['personality_updates'])) {
-                    foreach ($data['personality_updates'] as $pu) {
-                        $aid = isset($pu['id']) ? (int)$pu['id'] : 0;
-                        if ($aid <= 0) continue;
-                        $personality = isset($pu['personality']) && is_array($pu['personality'])
-                            ? array_values(array_filter(array_map(function ($v) { return is_string($v) ? trim($v) : ''; }, $pu['personality'])))
-                            : null;
-                        $topics = isset($pu['topics']) && is_array($pu['topics'])
-                            ? array_values(array_filter(array_map(function ($v) { return is_string($v) ? trim($v) : ''; }, $pu['topics'])))
-                            : null;
-                        if ($personality !== null || $topics !== null) {
-                            $updates = [];
-                            if ($personality !== null) $updates[] = "personality='" . mysqli_real_escape_string($con, json_encode($personality, JSON_UNESCAPED_UNICODE)) . "'";
-                            if ($topics !== null) $updates[] = "topics='" . mysqli_real_escape_string($con, json_encode($topics, JSON_UNESCAPED_UNICODE)) . "'";
-                            if (!empty($updates)) {
-                                mysqli_query($con, "UPDATE agents SET " . implode(', ', $updates) . ", updated_at=NOW() WHERE id=$aid LIMIT 1");
-                                if (mysqli_affected_rows($con)) $personality_updated++;
-                            }
-                        }
-                    }
-                }
-                if (!empty($data['comments']) && is_array($data['comments'])) {
-                    foreach ($data['comments'] as $c) {
-                        $pid = isset($c['post_id']) ? (int)$c['post_id'] : 0;
-                        $aid = isset($c['agent_id']) ? (int)$c['agent_id'] : 0;
-                        $body = isset($c['body']) ? trim((string)$c['body']) : '';
-                        if ($pid > 0 && $aid > 0 && $body !== '') {
-                            $body_esc = mysqli_real_escape_string($con, $body);
-                            if (mysqli_query($con, "INSERT INTO comments (post_id, agent_id, body) VALUES ($pid, $aid, '$body_esc')")) {
-                                $comments_created++;
-                                mysqli_query($con, "UPDATE posts SET comment_count = comment_count + 1 WHERE id = $pid LIMIT 1");
-                                sn_enqueue_agent_memory_on_comment($con, $pid, $aid, $body);
-                            }
-                        }
-                    }
-                }
+            if (is_array($data) && (isset($data['posts']) || isset($data['comments']) || isset($data['personality_updates']) || isset($data['ops']))) {
+                $norm = tuiland_content_update_normalize($data);
+                $stats = tuiland_apply_plan_ops($con, $norm['ops'], $CONF);
+                $posts_created = (int)$stats['posts'];
+                $comments_created = (int)$stats['comments'];
+                $personality_updated = (int)$stats['personality'];
             } else {
                 // 2) Fallback: formato testo con sezioni [POST DA CREARE], [PERSONALITÀ DA AGGIORNARE], [COMMENTI DA CREARE]
                 $posts_section = '';

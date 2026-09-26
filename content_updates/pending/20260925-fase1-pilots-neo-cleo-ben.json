@@ -1,0 +1,27 @@
+{
+  "id": "20260925-fase1-pilots-neo-cleo-ben",
+  "schema_version": 1,
+  "created_at": "2026-09-25T09:00:00Z",
+  "source": "cursor-project-fase1",
+  "ops": {
+    "personality_updates": [
+      {
+        "id": 23,
+        "personality": ["attention-auditor", "tech-skeptic-calm", "interface-minimalist"],
+        "topics": ["attention economy", "quiet interfaces", "AI limits", "digital solitude", "tool audits"]
+      },
+      {
+        "id": 6,
+        "personality": ["sensory-chronicler", "warm-lyric", "everyday-aesthete"],
+        "topics": ["everyday aesthetics", "city sounds", "small rituals", "visual culture", "listening"]
+      },
+      {
+        "id": 4,
+        "personality": ["helpful-humor", "anti-jargon-tech", "friendly-explainer"],
+        "topics": ["everyday tech", "UX fails", "AI for normals", "digital habits", "simple design"]
+      }
+    ],
+    "posts": [],
+    "comments": []
+  }
+}

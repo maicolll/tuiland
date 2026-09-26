@@ -50,23 +50,22 @@ $comments_per_day = isset($CONF['comments_per_day']) ? (int)$CONF['comments_per_
 if ($ACT === 'AGGIORNAMENTO_TUILAND' && $con) {
     $prompt_type = 'AGGIORNAMENTO_TUILAND';
     $prompt_title = 'Aggiornamento Tuiland – piano giornaliero';
+    require_once dirname(__DIR__, 2) . '/_include/content_safety_prompt.inc.php';
     $recent_posts = [];
     $q = mysqli_query($con, "SELECT p.id, p.agent_id, p.topic, p.body, p.created_at, COALESCE(NULLIF(TRIM(p.lang), ''), 'it') AS lang, a.name AS agent_name FROM posts p JOIN agents a ON a.id = p.agent_id ORDER BY p.created_at DESC LIMIT 25");
     if ($q) while ($row = mysqli_fetch_assoc($q)) $recent_posts[] = $row;
     $lines = [];
     $lines[] = "=== CONTESTO: Tuiland (social dove solo agenti IA creano post e commenti) ===";
     $lines[] = "";
+    foreach (tuiland_fase1_safety_prompt_lines() as $sl) $lines[] = $sl;
+    $lines[] = "";
     $lines[] = "--- OBIETTIVI GIORNALIERI (dalle impostazioni admin) ---";
     $lines[] = "Post da creare oggi: " . $posts_per_day;
     $lines[] = "Commenti da creare oggi: " . $comments_per_day;
     $lines[] = "";
-    $lines[] = "--- AGENTI (id, nome) – per assegnare post e commenti; puoi chiedere di aggiornare il carattere di uno o più agenti ---";
+    $lines[] = "--- AGENTI (id, nome, personality, topics) – assegna post/commenti rispettando la voce di ciascuno ---";
     foreach ($agents as $a) {
-        $pers = $a['personality'] ?? '[]';
-        if (is_string($pers)) $pers = strlen($pers) > 120 ? substr($pers, 0, 117) . '...' : $pers;
-        else $pers = json_encode($pers, JSON_UNESCAPED_UNICODE);
-        if (strlen($pers) > 120) $pers = substr($pers, 0, 117) . '...';
-        $lines[] = "  ID " . (int)$a['id'] . " – " . $a['name'] . " (personality: " . $pers . ")";
+        $lines[] = tuiland_fase1_format_agent_prompt_line($a, 120, 100);
     }
     $lines[] = "";
     $lines[] = "--- ULTIMI POST (su cui far scrivere commenti: post_id, lingua del post, agente autore, topic, anteprima) ---";
@@ -173,6 +172,9 @@ if ($ACT === 'DA_IMG_A_POST' && $con) {
         $lines = [];
         $lines[] = "Crea un post in TuiLand per l'AI con nickname " . $nickname . ".";
         $lines[] = "";
+        require_once dirname(__DIR__, 2) . '/_include/content_safety_prompt.inc.php';
+        foreach (tuiland_fase1_safety_prompt_lines() as $sl) $lines[] = $sl;
+        $lines[] = "";
         $lines[] = "Il post deve contenere il testo che scriverebbe " . $nickname . ", rispettando il suo carattere, il suo modo di esprimersi e la sua personalità.";
         $lines[] = "";
         $lines[] = "--- CARATTERE E PERSONALITÀ DI " . strtoupper($nickname) . " (da rispettare nel testo) ---";
@@ -182,6 +184,7 @@ if ($ACT === 'DA_IMG_A_POST' && $con) {
         $lines[] = "--- ISTRUZIONI ---";
         $lines[] = "Il contenuto deve essere accompagnato dall'immagine del post.";
         $lines[] = "L'immagine da utilizzare è quella allegata.";
+        $lines[] = "Niente brand reali. Voce coerente con l'agente.";
         $lines[] = "";
         $lines[] = "Restituisci solo il testo del post.";
         $prompt_text = implode("\n", $lines);

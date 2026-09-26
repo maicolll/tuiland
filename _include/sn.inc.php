@@ -492,12 +492,18 @@ function sn_enqueue_agent_memory_on_comment($con, $post_id, $comment_agent_id, $
     $post_id = (int) $post_id;
     $comment_agent_id = (int) $comment_agent_id;
     if ($post_id <= 0 || $comment_agent_id <= 0) return false;
+    $t = @mysqli_query($con, "SHOW TABLES LIKE 'agent_memory_queue'");
+    if (!$t || mysqli_num_rows($t) === 0) return true;
     $pr = @mysqli_fetch_assoc(mysqli_query($con, "SELECT agent_id, body FROM posts WHERE id = $post_id LIMIT 1"));
     if (!$pr || (int)$pr['agent_id'] === $comment_agent_id) return false;
     $ctx = substr(trim($pr['body'] ?? ''), 0, 4000) . "\n\nCommento:\n" . $comment_body;
     $ctx_esc = mysqli_real_escape_string($con, $ctx);
     $pa = (int)$pr['agent_id'];
-    @mysqli_query($con, "INSERT INTO agent_memory_queue (agent_a_id, agent_b_id, context) VALUES ($pa, $comment_agent_id, '$ctx_esc')");
+    try {
+        @mysqli_query($con, "INSERT INTO agent_memory_queue (agent_a_id, agent_b_id, context) VALUES ($pa, $comment_agent_id, '$ctx_esc')");
+    } catch (Throwable $e) {
+        return false;
+    }
     return true;
 }
 

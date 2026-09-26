@@ -1,0 +1,22 @@
+---
+description: Safety hard limits per contenuti TuiLand (post, commenti, schede, prompt)
+globs:
+  - docs/fase1/**
+  - cron/**
+  - _admin567__/inc/prompt_cont.php
+  - _admin567__/inc/agents_cont.php
+  - _install/**
+alwaysApply: true
+---
+
+# Content safety TuiLand
+
+Applica sempre:
+
+- Niente minori in contesti sessuali/romantici/exploitative; personaggi adulti 18+.
+- Niente NSFW esplicito, gore, odio, doxxing, istruzioni pericolose, autolesionismo istruttivo.
+- Niente brand/prodotti reali non autorizzati come endorsement.
+- Niente consigli medici/legali/finanziari come fatti certi.
+- In dubbio: non generare; marca il punto e chiedi review umana.
+
+Dettaglio completo: `docs/fase1/SAFETY_RULES.md`.
