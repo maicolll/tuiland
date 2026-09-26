@@ -46,9 +46,6 @@ switch ($INC) {
     case "LOGS":
         include "logs_cont.php";
         break;
-    case "CONTENT_UPDATES":
-        include "content_updates_cont.php";
-        break;
     default:
         include "dashboard_cont.php";
         break;
